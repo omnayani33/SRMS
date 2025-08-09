@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if student else 'Add' }} Student - SRMS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center">
+            <a href="{{ url_for('admin_students') }}" class="text-gray-600 hover:text-gray-900 mr-4">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {{ 'Edit Student' if student else 'Add New Student' }}
+                </h1>
+                <p class="text-gray-600 mt-1">
+                    {{ 'Update student information' if student else 'Enter student details to create a new account' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <form method="POST" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            <!-- Personal Information -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-user mr-2 text-blue-600"></i>
+                    Personal Information
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.first_name.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            First Name *
+                        </label>
+                        {{ form.first_name(class="form-input") }}
+                        {% if form.first_name.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.first_name.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.last_name.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Last Name *
+                        </label>
+                        {{ form.last_name(class="form-input") }}
+                        {% if form.last_name.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.last_name.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="{{ form.date_of_birth.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Date of Birth
+                    </label>
+                    {{ form.date_of_birth(class="form-input") }}
+                    {% if form.date_of_birth.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.date_of_birth.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Account Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-key mr-2 text-green-600"></i>
+                    Account Information
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.username.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Username *
+                        </label>
+                        {{ form.username(class="form-input") }}
+                        {% if form.username.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.username.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.email.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Email Address *
+                        </label>
+                        {{ form.email(class="form-input") }}
+                        {% if form.email.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.email.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="{{ form.student_id.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Student ID
+                    </label>
+                    {{ form.student_id(class="form-input", placeholder="Leave empty to auto-generate") }}
+                    {% if form.student_id.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.student_id.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="text-sm text-gray-500 mt-1">
+                        If left empty, a student ID will be automatically generated.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-address-book mr-2 text-purple-600"></i>
+                    Contact Information
+                </h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label for="{{ form.phone.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number
+                        </label>
+                        {{ form.phone(class="form-input") }}
+                        {% if form.phone.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.phone.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.address.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Address
+                        </label>
+                        {{ form.address(class="form-textarea", rows="3") }}
+                        {% if form.address.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.address.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Default Password Notice -->
+            {% if not student %}
+            <div class="border-t border-gray-200 pt-6">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+                        <div>
+                            <h3 class="text-sm font-medium text-blue-800">Default Password</h3>
+                            <p class="text-sm text-blue-700 mt-1">
+                                The student will be created with a default password: <strong>student123</strong>
+                                <br>
+                                Please inform the student to change this password after their first login.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Form Actions -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex justify-end space-x-3">
+                    <a href="{{ url_for('admin_students') }}" class="btn btn-outline-gray">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        {{ 'Update Student' if student else 'Add Student' }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

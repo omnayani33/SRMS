@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - SRMS{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p class="text-gray-600 mt-1">Overview of system statistics and recent activities</p>
+            </div>
+            <div class="text-right">
+                <p class="text-sm text-gray-500">Last updated</p>
+                <p class="text-lg font-semibold text-gray-900" id="currentTime"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="stat-card bg-gradient-to-r from-blue-500 to-blue-600">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-white bg-opacity-30">
+                    <i class="fas fa-users text-white text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-white text-lg font-semibold">Total Students</h3>
+                    <p class="text-white text-2xl font-bold">{{ stats.total_students }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card bg-gradient-to-r from-green-500 to-green-600">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-white bg-opacity-30">
+                    <i class="fas fa-book text-white text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-white text-lg font-semibold">Total Subjects</h3>
+                    <p class="text-white text-2xl font-bold">{{ stats.total_subjects }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card bg-gradient-to-r from-purple-500 to-purple-600">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-white bg-opacity-30">
+                    <i class="fas fa-chart-line text-white text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-white text-lg font-semibold">Total Results</h3>
+                    <p class="text-white text-2xl font-bold">{{ stats.total_results }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="stat-card bg-gradient-to-r from-orange-500 to-orange-600">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-white bg-opacity-30">
+                    <i class="fas fa-percentage text-white text-xl"></i>
+                </div>
+                <div class="ml-4">
+                    <h3 class="text-white text-lg font-semibold">Avg Performance</h3>
+                    <p class="text-white text-2xl font-bold">{{ stats.avg_percentage }}%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Grade Distribution Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-pie mr-2 text-blue-600"></i>
+                Grade Distribution
+            </h2>
+            <canvas id="gradeChart" height="300"></canvas>
+        </div>
+
+        <!-- Monthly Results Chart -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-chart-line mr-2 text-green-600"></i>
+                Monthly Results
+            </h2>
+            <canvas id="monthlyChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Activities and Top Performers -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Recent Results -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-clock mr-2 text-purple-600"></i>
+                Recent Results
+            </h2>
+            <div class="space-y-3">
+                {% for result in stats.recent_results %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                        <p class="font-medium text-gray-900">{{ result.student.full_name }}</p>
+                        <p class="text-sm text-gray-600">{{ result.subject.name }}</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="grade-badge grade-{{ result.grade.lower().replace('+', '-plus') }}">
+                            {{ result.grade }}
+                        </span>
+                        <p class="text-sm text-gray-600 mt-1">{{ result.percentage|round(1) }}%</p>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-inbox text-4xl mb-2"></i>
+                    <p>No recent results found</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Top Performers -->
+        <div class="bg-white rounded-lg shadow p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">
+                <i class="fas fa-trophy mr-2 text-yellow-600"></i>
+                Top Performers
+            </h2>
+            <div class="space-y-3">
+                {% for student in stats.top_performers %}
+                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            {{ loop.index }}
+                        </div>
+                        <div>
+                            <p class="font-medium text-gray-900">{{ student.full_name }}</p>
+                            <p class="text-sm text-gray-600">{{ student.student_id or student.username }}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <i class="fas fa-star text-yellow-500"></i>
+                    </div>
+                </div>
+                {% else %}
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-user-graduate text-4xl mb-2"></i>
+                    <p>No top performers data available</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">
+            <i class="fas fa-bolt mr-2 text-indigo-600"></i>
+            Quick Actions
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ url_for('add_student') }}" class="quick-action-card">
+                <i class="fas fa-user-plus text-blue-600 text-2xl mb-2"></i>
+                <h3 class="font-semibold text-gray-900">Add Student</h3>
+                <p class="text-sm text-gray-600">Register a new student</p>
+            </a>
+            
+            <a href="{{ url_for('add_result') }}" class="quick-action-card">
+                <i class="fas fa-plus-circle text-green-600 text-2xl mb-2"></i>
+                <h3 class="font-semibold text-gray-900">Add Result</h3>
+                <p class="text-sm text-gray-600">Enter exam results</p>
+            </a>
+            
+            <a href="{{ url_for('add_subject') }}" class="quick-action-card">
+                <i class="fas fa-book-plus text-purple-600 text-2xl mb-2"></i>
+                <h3 class="font-semibold text-gray-900">Add Subject</h3>
+                <p class="text-sm text-gray-600">Create new subject</p>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+<script>
+    // Update current time
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('currentTime').textContent = now.toLocaleTimeString();
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+
+    // Initialize charts
+    initializeDashboardCharts();
+</script>
+{% endblock %}

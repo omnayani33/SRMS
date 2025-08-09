@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if result else 'Add' }} Result - SRMS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center">
+            <a href="{{ url_for('admin_results') }}" class="text-gray-600 hover:text-gray-900 mr-4">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {{ 'Edit Result' if result else 'Add New Result' }}
+                </h1>
+                <p class="text-gray-600 mt-1">
+                    {{ 'Update exam result information' if result else 'Enter exam result details' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <form method="POST" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            <!-- Student and Subject Selection -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-user-graduate mr-2 text-blue-600"></i>
+                    Student & Subject Information
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.student_id.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Student *
+                        </label>
+                        {{ form.student_id(class="form-select") }}
+                        {% if form.student_id.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.student_id.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.subject_id.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Subject *
+                        </label>
+                        {{ form.subject_id(class="form-select") }}
+                        {% if form.subject_id.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.subject_id.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Marks Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-chart-line mr-2 text-green-600"></i>
+                    Marks Information
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.marks_obtained.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Marks Obtained *
+                        </label>
+                        {{ form.marks_obtained(class="form-input", min="0", step="0.01") }}
+                        {% if form.marks_obtained.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.marks_obtained.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.total_marks.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Total Marks *
+                        </label>
+                        {{ form.total_marks(class="form-input", min="1", step="0.01") }}
+                        {% if form.total_marks.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.total_marks.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Percentage Preview -->
+                <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-medium text-gray-700">Percentage:</span>
+                        <span id="percentagePreview" class="text-lg font-bold text-gray-900">--%</span>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm font-medium text-gray-700">Grade:</span>
+                        <span id="gradePreview" class="grade-badge grade-default">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Exam Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>
+                    Exam Information
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.semester.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Semester *
+                        </label>
+                        {{ form.semester(class="form-input", placeholder="e.g., Fall 2024, Spring 2025") }}
+                        {% if form.semester.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.semester.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.academic_year.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Academic Year *
+                        </label>
+                        {{ form.academic_year(class="form-input", placeholder="e.g., 2024-2025") }}
+                        {% if form.academic_year.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.academic_year.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="{{ form.exam_type.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Exam Type *
+                    </label>
+                    {{ form.exam_type(class="form-select") }}
+                    {% if form.exam_type.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.exam_type.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-sticky-note mr-2 text-orange-600"></i>
+                    Additional Information
+                </h2>
+                
+                <div>
+                    <label for="{{ form.remarks.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Remarks
+                    </label>
+                    {{ form.remarks(class="form-textarea", rows="3", placeholder="Optional remarks or comments...") }}
+                    {% if form.remarks.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.remarks.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Grade System Information -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+                        <div>
+                            <h3 class="text-sm font-medium text-blue-800">Grade System</h3>
+                            <div class="text-sm text-blue-700 mt-2 grid grid-cols-2 md:grid-cols-4 gap-2">
+                                <div>A+: 90-100%</div>
+                                <div>A: 80-89%</div>
+                                <div>B+: 70-79%</div>
+                                <div>B: 60-69%</div>
+                                <div>C+: 50-59%</div>
+                                <div>C: 40-49%</div>
+                                <div>F: Below 40%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex justify-end space-x-3">
+                    <a href="{{ url_for('admin_results') }}" class="btn btn-outline-gray">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        {{ 'Update Result' if result else 'Add Result' }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Grade calculation and preview
+function calculateGrade(percentage) {
+    if (percentage >= 90) return 'A+';
+    else if (percentage >= 80) return 'A';
+    else if (percentage >= 70) return 'B+';
+    else if (percentage >= 60) return 'B';
+    else if (percentage >= 50) return 'C+';
+    else if (percentage >= 40) return 'C';
+    else return 'F';
+}
+
+function updatePreview() {
+    const marksObtained = parseFloat(document.getElementById('marks_obtained').value) || 0;
+    const totalMarks = parseFloat(document.getElementById('total_marks').value) || 0;
+    
+    if (totalMarks > 0) {
+        const percentage = (marksObtained / totalMarks) * 100;
+        const grade = calculateGrade(percentage);
+        
+        document.getElementById('percentagePreview').textContent = percentage.toFixed(1) + '%';
+        
+        const gradeElement = document.getElementById('gradePreview');
+        gradeElement.textContent = grade;
+        gradeElement.className = `grade-badge grade-${grade.toLowerCase().replace('+', '-plus')}`;
+    } else {
+        document.getElementById('percentagePreview').textContent = '--%';
+        document.getElementById('gradePreview').textContent = '--';
+        document.getElementById('gradePreview').className = 'grade-badge grade-default';
+    }
+}
+
+// Add event listeners
+document.getElementById('marks_obtained').addEventListener('input', updatePreview);
+document.getElementById('total_marks').addEventListener('input', updatePreview);
+
+// Initial calculation
+updatePreview();
+</script>
+{% endblock %}

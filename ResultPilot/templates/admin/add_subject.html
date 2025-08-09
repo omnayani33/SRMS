@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if subject else 'Add' }} Subject - SRMS{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <!-- Header -->
+    <div class="bg-white rounded-lg shadow p-6 mb-6">
+        <div class="flex items-center">
+            <a href="{{ url_for('admin_subjects') }}" class="text-gray-600 hover:text-gray-900 mr-4">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                    {{ 'Edit Subject' if subject else 'Add New Subject' }}
+                </h1>
+                <p class="text-gray-600 mt-1">
+                    {{ 'Update subject information' if subject else 'Create a new subject for the curriculum' }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Form -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <form method="POST" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            <!-- Subject Information -->
+            <div>
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-book mr-2 text-blue-600"></i>
+                    Subject Information
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="{{ form.name.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Subject Name *
+                        </label>
+                        {{ form.name(class="form-input", placeholder="e.g., Mathematics, Physics, Chemistry") }}
+                        {% if form.name.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.name.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.code.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Subject Code *
+                        </label>
+                        {{ form.code(class="form-input", placeholder="e.g., MATH101, PHY201") }}
+                        {% if form.code.errors %}
+                            <div class="text-red-600 text-sm mt-1">
+                                {% for error in form.code.errors %}
+                                    <p>{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="mt-6">
+                    <label for="{{ form.credits.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Credits
+                    </label>
+                    {{ form.credits(class="form-input", min="1", max="10") }}
+                    {% if form.credits.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.credits.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="text-sm text-gray-500 mt-1">Number of credit hours for this subject (1-10)</p>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="border-t border-gray-200 pt-6">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-align-left mr-2 text-green-600"></i>
+                    Description
+                </h2>
+                
+                <div>
+                    <label for="{{ form.description.id }}" class="block text-sm font-medium text-gray-700 mb-2">
+                        Subject Description
+                    </label>
+                    {{ form.description(class="form-textarea", rows="4", placeholder="Provide a brief description of the subject content and objectives...") }}
+                    {% if form.description.errors %}
+                        <div class="text-red-600 text-sm mt-1">
+                            {% for error in form.description.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="text-sm text-gray-500 mt-1">Optional description to help identify the subject</p>
+                </div>
+            </div>
+
+            <!-- Subject Guidelines -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex">
+                        <i class="fas fa-info-circle text-blue-600 mt-0.5 mr-3"></i>
+                        <div>
+                            <h3 class="text-sm font-medium text-blue-800">Subject Guidelines</h3>
+                            <ul class="text-sm text-blue-700 mt-2 space-y-1">
+                                <li>• Subject codes should be unique and follow institutional standards</li>
+                                <li>• Use clear, descriptive names for easy identification</li>
+                                <li>• Credit hours typically range from 1-6 for most subjects</li>
+                                <li>• Include relevant keywords in the description for better searchability</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="border-t border-gray-200 pt-6">
+                <div class="flex justify-end space-x-3">
+                    <a href="{{ url_for('admin_subjects') }}" class="btn btn-outline-gray">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save mr-2"></i>
+                        {{ 'Update Subject' if subject else 'Add Subject' }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+Student Result Management System (Flask + Tailwind)
+You are a senior full-stack developer. I want to build a Student Result Management System using the following tech stack:
+
+Frontend: HTML, Tailwind CSS, Vanilla JavaScript (linked via Flask templates)
+Backend: Python (Flask framework) with Jinja2 for rendering HTML templates
+Database: MySQL, integrated via SQLAlchemy ORM
+Authentication: Flask-Login (JWT for APIs if needed)
+Admin Dashboard Template: TailAdmin (Free Tailwind CSS Admin Template)
+Deployment: Local environment for now, no production hosting
+
+Core Features:
+
+Authentication Module – Login, Signup, Logout (JWT ready)
+
+Admin Dashboard –
+
+View all students
+
+Add/Update/Delete student records
+
+Upload/update student results
+
+View all results (search/filter)
+
+Student Panel –
+
+View personal results after login
+
+Update profile details
+
+Database Structure: Students table, Results table, Users table (with roles: Admin, Student)
+
+Project Structure:
+
+markdown
+Copy
+Edit
+student_result_system/
+├── backend/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── models.py
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth_routes.py
+│   │   ├── admin_routes.py
+│   │   └── student_routes.py
+│   └── utils/
+│       ├── __init__.py
+│       └── db_utils.py
+│
+├── frontend/
+│   ├── static/
+│   │   ├── css/
+│   │   │   └── styles.css
+│   │   └── js/
+│   │       └── main.js
+│   └── templates/
+│       ├── base.html
+│       ├── auth/
+│       │   ├── login.html
+│       │   └── signup.html
+│       └── admin/
+│           ├── dashboard.html
+│           ├── students.html
+│           └── results.html
+│
+├── app.py
+├── requirements.txt
+└── README.md
+Deliverables:
+
+Complete backend with routes, models, authentication, and database integration
+
+Frontend pages with Tailwind styling and Jinja2 templating
+
+Admin dashboard using TailAdmin template integrated with Flask routes
+
+Fully working CRUD for students and results
+
+Test data for demonstration
+
+Build this step-by-step starting from backend setup → authentication → admin CRUD → student panel → frontend integration.
+Write clean, modular, and commented code for maintainability.
